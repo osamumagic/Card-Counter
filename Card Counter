@@ -1,0 +1,50 @@
+#Store the total number of cards
+#jj is the black joker
+#jjj is the red jocker
+deck = {'2':8,'3':8,'4':8,'5':8,'6':8,'7':8,'8':8,'9':8,'10':8,'J':8,'Q':8,'K':8,'A':8,'jj':2, 'jjj':2,}
+
+#Counting card mechanism
+def play_cards(card, num):
+
+    if card in deck:
+        if deck[card] >= num:
+            deck[card] -= num
+        else: 
+            print("OOOooopps, no cards left!")
+        
+
+#Remaining cards 
+def remaining_cards():
+    print("The remaining Cards:")
+    for card, num in deck.items():
+        print(f"{card}: {num}")
+    print("\n")
+    
+#Ask player which card is being played
+def start():
+    print("This is the beginning of the game\n")
+    while True:
+        line = input("Which card is played? format 2:3 Or type 'quit' to end the game.\n").strip()
+        if line == 'quit':
+            print("Game Over :)")
+            remaining_cards()
+            break
+        if ":" in line:
+            card, num = line.split(":")
+
+            try:
+                num = int(num)
+            except ValueError:
+                print("Input wrong, please do it again\n")
+                continue 
+
+            if card not in deck:
+                print("Card not found\n")
+                continue 
+
+            play_cards(card, num)
+            remaining_cards()
+        else:
+            print("Input wrong, please do it again\n") 
+
+    start()
