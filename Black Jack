@@ -1,0 +1,59 @@
+import random
+
+#define a function to deal a random card
+def take_card():
+    return random.randint(1, 10)
+
+#define the gaming loop 
+def blackjack_game():
+    print("Welcome to the game of Blackjack!")
+
+    while True:
+        #initialize player and dealer hands and scores
+        player = [take_card(), take_card()]
+        dealer = [take_card(), take_card()]
+        
+        print(f"Your cards are: {player}")
+        print(f"Dealer's first card is: {dealer[0]}")
+
+        # Chosing to take more or quit:
+        while True:
+            # Check if player has blackjack or busts
+            if sum(player) == 21:
+                print("Congrats! You win!!")
+                return
+            elif sum(player) > 21:
+                print(f"Oops! {sum(player)} is over 21.")
+                print(f"Game Over~")
+                return
+            
+            #player chooses to take more or quit
+            choice = input("Type 'more' to draw another card or 'quit' to end the game: ").strip().lower()
+            if choice == 'more':
+                player.append(take_card())
+                print(f"Your cards: {player}")
+            elif choice == 'quit':
+                break
+            else:
+                print("Invalid action, please type 'more' or 'quit'.")
+        
+        #forcing dealer to drawn card when below 17
+        print(f"\nDealer's cards: {dealer},")
+        while sum(dealer) < 17:
+            dealer.append(take_card())
+            print(f"Dealer draws a card. Dealer's cards: {dealer}")
+        
+        #determine the result
+        player_score = sum(player)
+        dealer_score = sum(dealer)
+        
+        if dealer_score > 21:
+            print("Congrats, dealer has more than 21! You win!!")
+        elif player_score > dealer_score:
+            print(f"Congrats! You win!! Your score: {player_score} is greater than dealer's score: {dealer_score}")
+        elif player_score < dealer_score:
+            print(f"Opps~ You lose. Your score: {player_score} is less than dealer's score: {dealer_score}")
+        else:
+            print(f"Tie! The scores are the same!")
+
+blackjack_game()
