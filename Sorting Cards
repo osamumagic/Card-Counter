@@ -1,0 +1,100 @@
+from collections import Counter, defaultdict
+
+# list out the input
+def list_input(card_input):
+    # asssume input is space-separated, e.g., "A K 5 5 10 10 J" 
+    cards = card_input.split()  
+    return cards
+
+# define empty group for output
+groups = []
+
+def find_groups(cards):
+    card_count = Counter(cards)
+
+# define all the group types
+# check for groups in order of priority
+
+    # six of a kind
+    for card, count in card_count.items():
+        if count >= 6:
+            groups.append((card, "six of a kind"))
+            card_count[card] -= 6
+
+    # five of a kind
+    for card, count in card_count.items():
+        if count >= 5:
+            groups.append((card, "five of a kind"))
+            card_count[card] -= 5
+
+    # four of a kind
+    for card, count in card_count.items():
+        if count >= 4:
+            groups.append((card, "four of a kind"))
+            card_count[card] -= 4
+            
+    # three consecutive pairs
+    # I had to seek for help from friends here, I have no clue on how you meant to code this
+    # I know that I need to first identify and sort the pairs
+    # but checking for three consecutive neigbours was hard !!!
+    # therefore spent most of my time sorting this and double checking code with friends
+    
+    # identify the pairs
+    pairs = [card for card, count in card_count.items() if count >= 2]
+    # sort the pairs
+    pairs.sort(key=lambda x: "A23456789TJQK".index(x))
+    #create empty pair list
+    consecutive_pairs = []
+    
+# check for consecutive neighbouring pairs
+    for i in range(len(pairs) - 2):
+            if ("A23456789TJQK".index(pairs[i + 2]) - "A23456789TJQK".index(pairs[i])) == 2:
+                consecutive_pairs.append(pairs[i:i+3])
+                break
+# if consecutive pairs found
+    if consecutive_pairs:
+        groups.append((",".join(consecutive_pairs[0]), "three consecutive pairs"))
+        for card in consecutive_pairs[0]:
+            card_count[card] -= 2
+        
+    # three of a kind + pair
+    for card, count in card_count.items():
+        if count >= 3:
+            # find any pair 
+            for other_card, other_count in card_count.items():
+                if other_card != card and other_count >= 2:
+                    groups.append((card, "three of a kind + pair with " + other_card))
+                    card_count[card] -= 3
+                    card_count[other_card] -= 2
+                    break
+
+    # three of a kind
+    for card, count in card_count.items():
+        if count >= 3:
+            groups.append((card, "three of a kind"))
+            card_count[card] -= 3
+
+    # pair
+    for card, count in card_count.items():
+        if count >= 2:
+            groups.append((card, "pair"))
+            card_count[card] -= 2
+
+    # single 
+    for card, count in card_count.items():
+        for _ in range(count):
+            groups.append((card, "single"))
+
+    return groups
+
+def main():
+    card_input = input("Enter your cards (e.g., 'A K 5 5 10 10 J'): ")
+    cards = list_input(card_input)
+    groups = find_groups(cards)
+
+    # output the groupings
+    print("Optimal Groupings:")
+    for group in groups:
+        print(f"{group[1]}: {group[0]}")
+
+main()
